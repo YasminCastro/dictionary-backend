@@ -13,6 +13,6 @@ const entriesSchema: Schema = new Schema({
   added: { type: Date, default: Date.now },
 });
 
-const userModel = model<Entries & Document>('Entries', entriesSchema);
+const entriesModel = model<Entries & Document>('Entries', entriesSchema);
 
-export default userModel;
+export default entriesModel;
