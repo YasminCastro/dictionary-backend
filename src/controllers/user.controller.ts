@@ -18,6 +18,18 @@ class UsersController {
     }
   };
 
+  public findWordHistory = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const userId: string = req.user._id.toString();
+      console.log(userId);
+      const findOneUserData = await this.userService.findUserEntries(userId);
+
+      res.status(200).json(findOneUserData);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public getUserById = async (req: Request, res: Response, next: NextFunction) => {
     try {
       const userId: string = req.params.id;

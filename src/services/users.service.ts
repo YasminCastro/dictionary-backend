@@ -4,9 +4,12 @@ import { HttpException } from '@exceptions/HttpException';
 import { User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
+import entriesModel from '@/models/entries.model';
+import { Entries } from '@/interfaces/entries.interface';
 
 class UserService {
   public users = userModel;
+  public entries = entriesModel;
 
   public async findAllUser(): Promise<User[]> {
     const users: User[] = await this.users.find();
@@ -14,7 +17,7 @@ class UserService {
   }
 
   public async findUserById(userId: string): Promise<User> {
-    if (isEmpty(userId)) throw new HttpException(400, "UserId is empty");
+    if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
 
     const findUser: User = await this.users.findOne({ _id: userId });
     if (!findUser) throw new HttpException(409, "User doesn't exist");
@@ -22,8 +25,16 @@ class UserService {
     return findUser;
   }
 
+  public async findUserEntries(userId: string): Promise<any> {
+    if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
+
+    const findEntries = await this.entries.find({ userId: userId });
+    if (!findEntries) throw new HttpException(409, 'Entries not found');
+    return findEntries;
+  }
+
   public async createUser(userData: CreateUserDto): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, "userData is empty");
+    if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findOne({ email: userData.email });
     if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
@@ -35,7 +46,7 @@ class UserService {
   }
 
   public async updateUser(userId: string, userData: CreateUserDto): Promise<User> {
-    if (isEmpty(userData)) throw new HttpException(400, "userData is empty");
+    if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     if (userData.email) {
       const findUser: User = await this.users.findOne({ email: userData.email });
