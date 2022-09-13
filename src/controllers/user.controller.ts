@@ -2,15 +2,17 @@ import { NextFunction, Request, Response } from 'express';
 import { CreateUserDto } from '@dtos/users.dto';
 import { User } from '@interfaces/users.interface';
 import userService from '@services/users.service';
+import { RequestWithUser } from '@/interfaces/auth.interface';
 
-class UserController {
+class UsersController {
   public userService = new userService();
 
-  public getUsers = async (req: Request, res: Response, next: NextFunction) => {
+  public getUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const findAllUsersData: User[] = await this.userService.findAllUser();
+      const userId: string = req.user._id.toString();
+      const findOneUserData: User = await this.userService.findUserById(userId);
 
-      res.status(200).json({ data: findAllUsersData, message: 'findAll' });
+      res.status(200).json(findOneUserData);
     } catch (error) {
       next(error);
     }
@@ -62,4 +64,4 @@ class UserController {
   };
 }
 
-export default UserController;
+export default UsersController;
