@@ -13,7 +13,8 @@ class EntriesRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, authMiddleware, this.entriesController.index);
+    this.router.get(`${this.path}`, authMiddleware, this.entriesController.findWord);
+    this.router.get(`${this.path}/:word`, authMiddleware, this.entriesController.findWord);
   }
 }
 

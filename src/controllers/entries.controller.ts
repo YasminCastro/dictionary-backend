@@ -1,9 +1,14 @@
+import EntriesService from '@/services/entries.service';
 import { NextFunction, Request, Response } from 'express';
 
 class EntriesController {
-  public index = (req: Request, res: Response, next: NextFunction) => {
+  public entriesService = new EntriesService();
+
+  public findWord = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      res.status(200).json({ message: 'Fullstack Challenge 🏅 - Dictionary' });
+      const word = String(req.params.word);
+      const findWordData = await this.entriesService.findWord(word);
+      res.status(200).json(findWordData);
     } catch (error) {
       next(error);
     }
