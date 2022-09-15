@@ -25,10 +25,16 @@ class EntriesController {
   public saveFavoriteWord = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const word = String(req.params.word);
-      //todo não deixar salvar se já tiver algum salvo
+
+      const wordFound = await this.favorites.find({ userId: req.user._id.toString(), word });
+
+      if (wordFound.length > 0) {
+        return res.status(200).json({ message: 'word is already in the favorites list' });
+      }
+
       await this.favorites.create({ userId: req.user._id.toString(), word });
 
-      res.status(200).json({ message: 'word was saved' });
+      return res.status(200).json({ message: 'word was saved' });
     } catch (error) {
       next(error);
     }
