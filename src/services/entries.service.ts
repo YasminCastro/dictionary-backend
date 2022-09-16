@@ -1,5 +1,7 @@
 import { dictionaryInstance } from '@/config/axios';
+import { HttpException } from '@/exceptions/HttpException';
 import wordsModel from '@/models/words.model';
+import { isEmpty } from '@/utils/util';
 import fetch from 'node-fetch';
 
 class EntriesService {
@@ -10,29 +12,30 @@ class EntriesService {
     return data[0];
   }
 
-  public async listAllWords(word: string): Promise<any> {
-    const listFetched = await fetch('https://raw.githubusercontent.com/meetDeveloper/freeDictionaryAPI/master/meta/wordList/english.txt');
-    const wordsListRaw = await listFetched.text();
+  public async listAllWords(userId: string, limit: number, page: number): Promise<any> {
+    if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
 
-    const wordsListArray = wordsListRaw.split('\n');
+    const findEntries = await this.words.find().sort({ added: -1 });
+    if (!findEntries) throw new HttpException(404, 'Entries not found');
 
-    const obj = [];
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
 
-    wordsListArray.forEach(element => {
-      obj.push({ word: element });
+    const pageEntries = findEntries.slice(startIndex, endIndex);
+
+    let results = [];
+
+    pageEntries.forEach(wordData => {
+      results.push({ word: wordData.word });
     });
 
-    console.log(obj.length);
+    const totalDocs = findEntries.length;
+    const totalPages = Math.ceil(totalDocs / limit);
 
-    const inserindo = obj.slice(0, 4);
+    const hasPrev = page > 1 ? true : false;
+    const hasNext = page < totalPages ? true : false;
 
-    //salvar no banco de dados
-
-    // for (const word in wordsListParsed) {
-    //   await this.words.insertMany();
-    // }
-
-    return;
+    return { results, totalDocs, page, totalPages, hasPrev, hasNext };
   }
 }
 

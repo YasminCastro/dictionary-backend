@@ -25,8 +25,14 @@ class EntriesController {
 
   public listAllWords = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const word = String(req.params.word);
-      const findWordData = await this.entriesService.listAllWords(word);
+      const userId: string = String(req.user._id);
+      let page = Number(req.query.page);
+      let limit = Number(req.query.size);
+
+      if (!page) page = 1;
+      if (!limit) limit = 5;
+
+      const findWordData = await this.entriesService.listAllWords(userId, limit, page);
 
       res.status(200).json(findWordData);
     } catch (error) {
