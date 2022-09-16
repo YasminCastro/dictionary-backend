@@ -9,7 +9,7 @@ class UsersController {
 
   public getUser = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const userId: string = req.user._id.toString();
+      const userId: string = String(req.user._id);
       const findOneUserData: User = await this.userService.findUserById(userId);
 
       res.status(200).json(findOneUserData);
@@ -20,11 +20,16 @@ class UsersController {
 
   public findWordHistory = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const userId: string = req.user._id.toString();
-      console.log(userId);
-      const findOneUserData = await this.userService.findUserEntries(userId);
+      const userId: string = String(req.user._id);
+      let page = Number(req.query.page);
+      let limit = Number(req.query.size);
 
-      res.status(200).json(findOneUserData);
+      if (!page) page = 1;
+      if (!limit) limit = 5;
+
+      const wordsFound = await this.userService.findUserEntries(userId, page, limit);
+
+      res.status(200).json(wordsFound);
     } catch (error) {
       next(error);
     }

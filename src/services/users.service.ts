@@ -25,12 +25,31 @@ class UserService {
     return findUser;
   }
 
-  public async findUserEntries(userId: string): Promise<any> {
+  public async findUserEntries(userId: string, page: number, limit: number): Promise<any> {
     if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
 
-    const findEntries = await this.entries.find({ userId: userId });
-    if (!findEntries) throw new HttpException(409, 'Entries not found');
-    return findEntries;
+    const findEntries = await this.entries.find({ userId: userId }).sort({ added: -1 });
+    if (!findEntries) throw new HttpException(404, 'Entries not found');
+
+    // parse object
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const pageEntries = findEntries.slice(startIndex, endIndex);
+
+    let results = [];
+
+    pageEntries.forEach(wordData => {
+      results.push({ word: wordData.word, added: wordData.added });
+    });
+
+    const totalDocs = findEntries.length;
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    const hasPrev = page > 1 ? true : false;
+    const hasNext = page < totalPages ? true : false;
+
+    return { results, totalDocs, page, totalPages, hasPrev, hasNext };
   }
 
   public async createUser(userData: CreateUserDto): Promise<User> {
