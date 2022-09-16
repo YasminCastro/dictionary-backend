@@ -15,8 +15,15 @@ class EntriesService {
   public async listAllWords(userId: string, limit: number, page: number): Promise<any> {
     if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
 
-    const findEntries = await this.words.find().sort({ added: -1 });
-    if (!findEntries) throw new HttpException(404, 'Entries not found');
+    // const findEntries = await this.words.find().sort({ added: -1 });
+    // if (!findEntries) throw new HttpException(404, 'Entries not found');
+
+    const listFetched = await fetch('https://raw.githubusercontent.com/meetDeveloper/freeDictionaryAPI/master/meta/wordList/english.txt');
+    const wordsListRaw = await listFetched.text();
+
+    const findEntries = wordsListRaw.split('\n');
+
+    console.log(findEntries);
 
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
@@ -25,8 +32,8 @@ class EntriesService {
 
     let results = [];
 
-    pageEntries.forEach(wordData => {
-      results.push({ word: wordData.word });
+    pageEntries.forEach(word => {
+      results.push(word);
     });
 
     const totalDocs = findEntries.length;

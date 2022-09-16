@@ -5,6 +5,7 @@ const wordsSchema: Schema = new Schema({
   word: {
     type: String,
     required: true,
+    unique: true,
   },
 });
 

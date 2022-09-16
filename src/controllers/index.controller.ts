@@ -1,4 +1,5 @@
 import wordsModel from '@/models/words.model';
+import sliceArrayIntoChunks from '@/utils/sliceArrayIntoChunks';
 import { NextFunction, Request, Response } from 'express';
 import fetch from 'node-fetch';
 
@@ -25,12 +26,17 @@ class IndexController {
         obj.push({ word: element });
       });
 
-      console.log(obj.length);
+      const arrayChunks = sliceArrayIntoChunks(obj, 2000);
 
-      const inserindo = obj.slice(0, 50);
-      const addedWords = await this.words.insertMany(inserindo);
+      for (const chunck of arrayChunks) {
+        try {
+          await this.words.insertMany(chunck);
+        } catch (error) {
+          console.log(error);
+        }
+      }
 
-      res.status(200).json(addedWords);
+      res.status(200).json('addedWords');
     } catch (error) {
       next(error);
     }

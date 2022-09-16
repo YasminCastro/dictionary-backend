@@ -27,7 +27,7 @@ class EntriesController {
     try {
       const userId: string = String(req.user._id);
       let page = Number(req.query.page);
-      let limit = Number(req.query.size);
+      let limit = Number(req.query.limit);
 
       if (!page) page = 1;
       if (!limit) limit = 5;
