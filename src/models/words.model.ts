@@ -1,0 +1,13 @@
+import { model, Schema, Document } from 'mongoose';
+import { Words } from '@/interfaces/words.interface';
+
+const wordsSchema: Schema = new Schema({
+  word: {
+    type: String,
+    required: true,
+  },
+});
+
+const wordsModel = model<Words & Document>('Words', wordsSchema);
+
+export default wordsModel;

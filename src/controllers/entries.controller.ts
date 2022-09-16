@@ -23,6 +23,17 @@ class EntriesController {
     }
   };
 
+  public listAllWords = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    try {
+      const word = String(req.params.word);
+      const findWordData = await this.entriesService.listAllWords(word);
+
+      res.status(200).json(findWordData);
+    } catch (error) {
+      next(error);
+    }
+  };
+
   public saveFavoriteWord = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const word = String(req.params.word);
