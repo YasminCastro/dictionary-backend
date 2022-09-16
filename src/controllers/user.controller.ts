@@ -18,7 +18,7 @@ class UsersController {
     }
   };
 
-  public findWordHistory = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+  public findWordsHistory = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
       const userId: string = String(req.user._id);
       let page = Number(req.query.page);
@@ -35,23 +35,18 @@ class UsersController {
     }
   };
 
-  public getUserById = async (req: Request, res: Response, next: NextFunction) => {
+  public findFavoritesWordsHistory = async (req: RequestWithUser, res: Response, next: NextFunction) => {
     try {
-      const userId: string = req.params.id;
-      const findOneUserData: User = await this.userService.findUserById(userId);
+      const userId: string = String(req.user._id);
+      let page = Number(req.query.page);
+      let limit = Number(req.query.size);
 
-      res.status(200).json({ data: findOneUserData, message: 'findOne' });
-    } catch (error) {
-      next(error);
-    }
-  };
+      if (!page) page = 1;
+      if (!limit) limit = 5;
 
-  public createUser = async (req: Request, res: Response, next: NextFunction) => {
-    try {
-      const userData: CreateUserDto = req.body;
-      const createUserData: User = await this.userService.createUser(userData);
+      const wordsFound = await this.userService.findUserFavoritesWords(userId, page, limit);
 
-      res.status(201).json({ data: createUserData, message: 'created' });
+      res.status(200).json(wordsFound);
     } catch (error) {
       next(error);
     }

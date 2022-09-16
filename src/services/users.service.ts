@@ -6,10 +6,12 @@ import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
 import entriesModel from '@/models/entries.model';
 import { Entries } from '@/interfaces/entries.interface';
+import favoriteModel from '@/models/favorite.model';
 
 class UserService {
   public users = userModel;
   public entries = entriesModel;
+  public favorites = favoriteModel;
 
   public async findAllUser(): Promise<User[]> {
     const users: User[] = await this.users.find();
@@ -31,7 +33,32 @@ class UserService {
     const findEntries = await this.entries.find({ userId: userId }).sort({ added: -1 });
     if (!findEntries) throw new HttpException(404, 'Entries not found');
 
-    // parse object
+    const startIndex = (page - 1) * limit;
+    const endIndex = page * limit;
+
+    const pageEntries = findEntries.slice(startIndex, endIndex);
+
+    let results = [];
+
+    pageEntries.forEach(wordData => {
+      results.push({ word: wordData.word, added: wordData.added });
+    });
+
+    const totalDocs = findEntries.length;
+    const totalPages = Math.ceil(totalDocs / limit);
+
+    const hasPrev = page > 1 ? true : false;
+    const hasNext = page < totalPages ? true : false;
+
+    return { results, totalDocs, page, totalPages, hasPrev, hasNext };
+  }
+
+  public async findUserFavoritesWords(userId: string, page: number, limit: number): Promise<any> {
+    if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
+
+    const findEntries = await this.favorites.find({ userId: userId }).sort({ added: -1 });
+    if (!findEntries) throw new HttpException(404, 'Entries not found');
+
     const startIndex = (page - 1) * limit;
     const endIndex = page * limit;
 
