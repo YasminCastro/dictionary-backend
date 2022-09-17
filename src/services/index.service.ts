@@ -1,3 +1,4 @@
+import { HttpException } from '@/exceptions/HttpException';
 import wordsModel from '@/models/words.model';
 import sliceArrayIntoChunks from '@/utils/sliceArrayIntoChunks';
 import fetch from 'node-fetch';
@@ -11,21 +12,25 @@ class IndexService {
 
     const wordsListArray = wordsListRaw.split('\n');
 
-    const obj = [];
-
-    wordsListArray.forEach(element => {
-      obj.push({ word: element });
+    const wordsListParsed = wordsListArray.filter(element => {
+      return element !== '';
     });
 
-    const arrayChunks = sliceArrayIntoChunks(obj, 4000);
+    const wordsLists = [];
+
+    wordsListParsed.forEach(element => {
+      wordsLists.push({ word: element });
+    });
+
+    const wordsListChunks = sliceArrayIntoChunks(wordsLists, 4000);
 
     await this.words.collection.drop();
 
-    for (const chunck of arrayChunks) {
+    for (const chunck of wordsListChunks) {
       try {
         await this.words.insertMany(chunck);
-      } catch (error) {
-        console.log(error);
+      } catch (error: any) {
+        throw new HttpException(500, error);
       }
     }
   }
