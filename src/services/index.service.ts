@@ -18,8 +18,10 @@ class IndexService {
 
     const wordsLists = [];
 
+    let id = 1;
     wordsListParsed.forEach(element => {
-      wordsLists.push({ word: element });
+      wordsLists.push({ id, word: element });
+      id++;
     });
 
     const wordsListChunks = sliceArrayIntoChunks(wordsLists, 4000);
