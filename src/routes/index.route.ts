@@ -13,7 +13,7 @@ class IndexRoute implements Routes {
 
   private initializeRoutes() {
     this.router.get(`${this.path}`, this.indexController.index);
-    this.router.get(`${this.path}update-database`, this.indexController.updateDatabase); //todo: populate database
+    this.router.get(`${this.path}update-database`, this.indexController.updateDatabase);
   }
 }
 
