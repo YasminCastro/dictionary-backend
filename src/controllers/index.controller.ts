@@ -1,10 +1,13 @@
-import wordsModel from '@/models/words.model';
-import sliceArrayIntoChunks from '@/utils/sliceArrayIntoChunks';
 import { NextFunction, Request, Response } from 'express';
-import fetch from 'node-fetch';
+
+import wordsModel from '@/models/words.model';
+
+import IndexService from '@/services/index.service';
 
 class IndexController {
   public words = wordsModel;
+  public indexService = new IndexService();
+
   public index = (req: Request, res: Response, next: NextFunction) => {
     try {
       res.status(200).json({ message: 'Fullstack Challenge 🏅 - Dictionary' });
@@ -15,28 +18,7 @@ class IndexController {
 
   public updateDatabase = async (req: Request, res: Response, next: NextFunction) => {
     try {
-      const listFetched = await fetch('https://raw.githubusercontent.com/meetDeveloper/freeDictionaryAPI/master/meta/wordList/english.txt');
-      const wordsListRaw = await listFetched.text();
-
-      const wordsListArray = wordsListRaw.split('\n');
-
-      const obj = [];
-
-      wordsListArray.forEach(element => {
-        obj.push({ word: element });
-      });
-
-      const arrayChunks = sliceArrayIntoChunks(obj, 2000);
-
-      await this.words.collection.drop();
-
-      for (const chunck of arrayChunks) {
-        try {
-          await this.words.insertMany(chunck);
-        } catch (error) {
-          console.log(error);
-        }
-      }
+      await this.indexService.updateDatabase();
 
       res.status(200).json({ message: 'Database was successfully updated.' });
     } catch (error) {
