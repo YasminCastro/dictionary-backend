@@ -28,6 +28,8 @@ class IndexController {
 
       const arrayChunks = sliceArrayIntoChunks(obj, 2000);
 
+      await this.words.collection.drop();
+
       for (const chunck of arrayChunks) {
         try {
           await this.words.insertMany(chunck);
@@ -36,7 +38,7 @@ class IndexController {
         }
       }
 
-      res.status(200).json('addedWords');
+      res.status(200).json({ message: 'Database was successfully updated.' });
     } catch (error) {
       next(error);
     }
