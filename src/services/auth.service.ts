@@ -27,7 +27,7 @@ class AuthService {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findOne({ email: userData.email });
-    if (!findUser) throw new HttpException(409, `Email not found`);
+    if (!findUser) throw new HttpException(404, `Email not found`);
 
     const isPasswordMatching: boolean = await compare(userData.password, findUser.password);
     if (!isPasswordMatching) throw new HttpException(409, 'Password is not matching');
@@ -54,7 +54,7 @@ class AuthService {
   }
 
   public createToken(user: User): TokenData {
-    const dataStoredInToken: DataStoredInToken = { _id: user._id };
+    const dataStoredInToken: DataStoredInToken = { _id: user._id, email: user.email, name: user.name };
     const secretKey: string = SECRET_KEY;
     const expiresIn: number = 60 * 60;
 
