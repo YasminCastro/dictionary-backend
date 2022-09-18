@@ -15,7 +15,7 @@ class AuthService {
     if (isEmpty(userData)) throw new HttpException(400, 'userData is empty');
 
     const findUser: User = await this.users.findOne({ email: userData.email });
-    if (findUser) throw new HttpException(409, `This email ${userData.email} already exists`);
+    if (findUser) throw new HttpException(409, `This email already exists`);
 
     const hashedPassword = await hash(userData.password, 10);
     const createUserData: User = await this.users.create({ ...userData, password: hashedPassword });

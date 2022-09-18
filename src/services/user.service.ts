@@ -26,7 +26,7 @@ class UserService {
 
     if (userData.email) {
       const findUser: User = await this.users.findOne({ email: userData.email });
-      if (findUser && findUser._id != userId) throw new HttpException(409, `This email ${userData.email} already exists`);
+      if (findUser && findUser._id != userId) throw new HttpException(409, `This email already exists`);
     }
 
     if (userData.password) {
