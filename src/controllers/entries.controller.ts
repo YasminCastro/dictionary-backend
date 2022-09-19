@@ -11,14 +11,18 @@ class EntriesController {
   public entriesService = new EntriesService();
 
   public findWord = async (req: RequestWithUser, res: Response, next: NextFunction) => {
+    const word = String(req.params.word);
+
     try {
-      const word = String(req.params.word);
       const findWordData = await this.entriesService.findWord(word);
 
       await this.entries.create({ userId: req.user._id.toString(), word });
 
       res.status(200).json(findWordData);
     } catch (error: any) {
+      //remove word not found from db
+      await this.entriesService.removeWordFromDatabase(word);
+
       if (error?.response?.data?.title?.includes('No Definitions Found')) {
         next(error.response.data);
       } else {

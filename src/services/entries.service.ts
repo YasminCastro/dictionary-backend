@@ -34,6 +34,13 @@ class EntriesService {
 
     return { results, totalDocs, page, totalPages, hasPrev, hasNext };
   }
+
+  public async removeWordFromDatabase(word: string): Promise<void> {
+    const totalDocs = await this.words.deleteOne({ word });
+
+    console.log(totalDocs);
+    return;
+  }
 }
 
 export default EntriesService;
