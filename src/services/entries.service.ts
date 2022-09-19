@@ -2,7 +2,6 @@ import { dictionaryInstance } from '@/config/axios';
 import { HttpException } from '@/exceptions/HttpException';
 import wordsModel from '@/models/words.model';
 import { isEmpty } from '@/utils/util';
-import fetch from 'node-fetch';
 
 class EntriesService {
   public words = wordsModel;

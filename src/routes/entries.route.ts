@@ -13,7 +13,7 @@ class EntriesRoute implements Routes {
   }
 
   private initializeRoutes() {
-    this.router.get(`${this.path}`, authMiddleware, this.entriesController.listAllWords); //todo
+    this.router.get(`${this.path}`, authMiddleware, this.entriesController.listAllWords);
     this.router.get(`${this.path}/:word`, authMiddleware, this.entriesController.findWord);
     this.router.post(`${this.path}/:word/favorite`, authMiddleware, this.entriesController.saveFavoriteWord);
     this.router.delete(`${this.path}/:word/unfavorite`, authMiddleware, this.entriesController.removeFavoriteWord);

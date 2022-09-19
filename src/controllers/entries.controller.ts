@@ -18,8 +18,12 @@ class EntriesController {
       await this.entries.create({ userId: req.user._id.toString(), word });
 
       res.status(200).json(findWordData);
-    } catch (error) {
-      next(error);
+    } catch (error: any) {
+      if (error?.response?.data?.title?.includes('No Definitions Found')) {
+        next(error.response.data);
+      } else {
+        next(error);
+      }
     }
   };
 
