@@ -1,7 +1,7 @@
 import { model, Schema, Document } from 'mongoose';
-import { Entries } from '@/interfaces/entries.interface';
+import { History } from '@/interfaces/entries.interface';
 
-const entriesSchema: Schema = new Schema({
+const historySchema: Schema = new Schema({
   userId: {
     type: String,
     required: true,
@@ -13,6 +13,6 @@ const entriesSchema: Schema = new Schema({
   added: { type: Date, default: Date.now },
 });
 
-const entriesModel = model<Entries & Document>('Entries', entriesSchema);
+const historyModel = model<History & Document>('History', historySchema);
 
-export default entriesModel;
+export default historyModel;

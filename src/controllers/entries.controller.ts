@@ -1,12 +1,12 @@
 import EntriesService from '@/services/entries.service';
 import { NextFunction, Response } from 'express';
-import entriesModel from '@models/entries.model';
+import historyModel from '@/models/history.model';
 import { RequestWithUser } from '@/interfaces/auth.interface';
 import favoriteModel from '@/models/favorite.model';
 import { HttpException } from '@/exceptions/HttpException';
 
 class EntriesController {
-  public entries = entriesModel;
+  public history = historyModel;
   public favorites = favoriteModel;
   public entriesService = new EntriesService();
 
@@ -16,7 +16,7 @@ class EntriesController {
     try {
       const findWordData = await this.entriesService.findWord(word);
 
-      await this.entries.create({ userId: req.user._id.toString(), word });
+      await this.history.create({ userId: req.user._id.toString(), word });
 
       res.status(200).json(findWordData);
     } catch (error: any) {

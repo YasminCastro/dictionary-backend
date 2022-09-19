@@ -4,12 +4,12 @@ import { HttpException } from '@exceptions/HttpException';
 import { User } from '@interfaces/users.interface';
 import userModel from '@models/users.model';
 import { isEmpty } from '@utils/util';
-import entriesModel from '@/models/entries.model';
+import historyModel from '@/models/history.model';
 import favoriteModel from '@/models/favorite.model';
 
 class UserService {
   public users = userModel;
-  public entries = entriesModel;
+  public history = historyModel;
   public favorites = favoriteModel;
 
   public async findUserById(userId: string): Promise<User> {
@@ -50,7 +50,7 @@ class UserService {
   public async findUserEntries(userId: string, page: number, limit: number): Promise<any> {
     if (isEmpty(userId)) throw new HttpException(400, 'UserId is empty');
 
-    const findEntries = await this.entries.find({ userId: userId }).sort({ added: -1 });
+    const findEntries = await this.history.find({ userId: userId }).sort({ added: -1 });
     if (!findEntries) throw new HttpException(404, 'Entries not found');
 
     const startIndex = (page - 1) * limit;

@@ -1,4 +1,4 @@
-export interface Entries {
+export interface History {
   _id: string;
   userId: string;
   word: string;
