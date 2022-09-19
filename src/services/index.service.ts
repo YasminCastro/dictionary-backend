@@ -13,9 +13,9 @@ class IndexService {
     const wordsListArray = wordsListRaw.split('\n');
 
     //remove words if special characteres, blank spaces and numbers (api is bugging)
-    const regex = /[0-9!@#$%^&*(),.?":{}|<>'-;\/_ ]/;
+    const regex = /[0-9!@#$%^&*(),.?":{}|<>'-;å\/_ ]/;
 
-    let wordsListParsed = wordsListArray.filter(element => {
+    const wordsListParsed = wordsListArray.filter(element => {
       if (element === '' || regex.test(element)) {
       } else {
         return element;
