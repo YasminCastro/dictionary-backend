@@ -16,7 +16,7 @@ class EntriesController {
     try {
       const findWordData = await this.entriesService.findWord(word);
 
-      await this.history.create({ userId: req.user._id.toString(), word });
+      await this.history.updateOne({ userId: req.user._id.toString(), word }, { added: new Date() }, { upsert: true });
 
       res.status(200).json(findWordData);
     } catch (error: any) {
