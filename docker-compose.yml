@@ -29,13 +29,6 @@ services:
       - mongo
     depends_on:
       - mongo
-  mongo:
-    image: mvertes/alpine-mongo
-    container_name: mongo
-    ports:
-      - '27017:27017'
-    networks:
-      - backend
 
 networks:
   backend:
